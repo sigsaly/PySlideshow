@@ -47,7 +47,7 @@ particle_y = int(config['particle_y'])
 prepare_time = 0.2
 
 screen_size = Vector2(1920, 1080)
-frame_image = pygame.image.load(os.path.join(current_dir, 'christmasdeco1.png'))
+frame_image = pygame.image.load(os.path.join(current_dir, 'christmasdeco.png'))
 
 ALPHA_MIN = 50
 ALPHA_MAX = 340

@@ -49,7 +49,7 @@ prepare_time = 0.2
 screen_size = Vector2(1920, 1080)
 ALPHA_MIN = 0
 ALPHA_MAX = 255
-dust_image_path = os.path.join(current_dir, 'white_ball4.png')
+dust_image_path = os.path.join(current_dir, 'white_ball.png')
 
 PREPARE = 0
 POMODORO = 1
