@@ -65,6 +65,7 @@ music_folder = config['music_folder']
 music_files = [file for file in os.listdir(music_folder) if file.endswith((".mp3", ".wav"))]
 music_title = ''
 music_artist = ''
+base_name = ''
 
 def play_next_music():
     global music_files, music_title, music_artist, base_name
@@ -272,7 +273,7 @@ def main():
     global pm
 
     next_image()
-    play_next_music()
+    #play_next_music()
     mode = PREPARE
     tcounter = pygame.time.get_ticks()
     session = 1
@@ -281,7 +282,7 @@ def main():
 
     pm = ParticleManager()    
     for _ in range(60): # until it slow down under 60Hz    
-        pm.add(Particle((random.randint(0, screen_size.x), random.randint(0, screen_size.y)), #position
+        pm.add(Particle((random.randint(0, int(screen_size.x)), random.randint(0, int(screen_size.y))), #position
                             (random.uniform(-10, 10), random.uniform(-10, 10)), #velocity
                             random.randint(6, 60), #size
                             random.randint(ALPHA_MIN, ALPHA_MAX))) #alpha

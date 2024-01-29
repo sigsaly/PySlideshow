@@ -209,7 +209,7 @@ class Particle:
         self.pos += self.vel * dt
                    
         if self.pos.y > screen_size.y:
-            self.pos = (random.randint(0, screen_size.x), -10)
+            self.pos = (random.randint(0, int(screen_size.x)), -10)
         
         '''
         self.alpha += self.alpha_dir
@@ -268,8 +268,9 @@ def main():
     running = True
 
     pm = ParticleManager()    
+    print(screen_size.x)
     for _ in range(140): # until it slow down under 60Hz    
-        pm.add(Particle((random.randint(0, screen_size.x), random.randint(0, screen_size.y)), #position
+        pm.add(Particle((random.randint(0, int(screen_size.x)), random.randint(0, int(screen_size.y))), #position
                             (0, random.uniform(20, 100)), #velocity
                             random.randint(6, 60), #size
                             random.randint(ALPHA_MIN, ALPHA_MAX))) #alpha
