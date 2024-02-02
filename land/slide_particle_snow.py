@@ -22,13 +22,15 @@ config = read_config(config_file_path)
 
 
 # Set up display
-screen = pygame.display.set_mode((1920, 1080))
+SCREEN_WIDTH = 1920
+SCREEN_HEIGHT = 1080
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Image Slideshow")
 
 # Load images
 image_folder = config['image_folder']
 images = []
-current_image = 0
+current_image_index = 0
 
 # Set up clock
 clock = pygame.time.Clock()
@@ -46,10 +48,14 @@ particle_x = int(config['particle_x'])
 particle_y = int(config['particle_y'])  
 prepare_time = 0.2
 
-screen_size = Vector2(1920, 1080)
+screen_size = Vector2(SCREEN_WIDTH, SCREEN_HEIGHT)
 ALPHA_MIN = 50
 ALPHA_MAX = 255
 dust_image_path = os.path.join(current_dir, 'white_ball.png')
+
+FRAME_RATE = 30
+TRANSITION_COUNT = int(FRAME_RATE)
+transition_count = 0
 
 PREPARE = 0
 POMODORO = 1
@@ -115,7 +121,8 @@ def play_next_music():
         sys.exit()
 
 def next_image():
-    global images, image_path, scaled_image, current_image
+    global images, image_path, current_image_index, transition_count
+    global current_image, new_image
     first = False
     id_string = "thumb"
 
@@ -131,24 +138,46 @@ def next_image():
                 if id_string in filename:
                     image_path = filename
                     break  # Stop the loop once a match is found
-            print("first: ", image_path)
+            print("first, image_path: ", image_path)
             if image_path == None:
                 image_path = random.choice(images)
         else:
             image_path = random.choice(images)
+            transition_count = TRANSITION_COUNT # set transition
     else:
-        image_path = images[current_image]
-        current_image += 1
-        if current_image >= len(images):
-            current_image = 0
+        image_path = images[current_image_index]
+        current_image_index += 1
+        if current_image_index >= len(images):
+            current_image_index = 0
+        transition_count = TRANSITION_COUNT # set transition
 
     image = pygame.image.load(image_path)
     images.remove(image_path)   
     
-    scaled_image = pygame.transform.scale(image,(1920, 1080))  # Scale image to fit screen
+    if first:
+        current_image = pygame.transform.scale(image,(SCREEN_WIDTH, SCREEN_HEIGHT))
+    else:
+        new_image = pygame.transform.scale(image,(SCREEN_WIDTH, SCREEN_HEIGHT))
   
+def crossfade_transition(image1, image2, alpha):
+    image1.set_alpha(255 - alpha)
+    image2.set_alpha(alpha)
+    screen.blit(image1, (0, 0))
+    screen.blit(image2, (0, 0))
+
 def show_image():
-    screen.blit(scaled_image, (0, 0))
+    global transition_count, current_image, new_image
+
+    if transition_count > 0:
+        transition_count -= 1
+
+        crossfade_transition(current_image, new_image, int(255 - transition_count*255/TRANSITION_COUNT))
+
+        if transition_count == 0:
+            current_image = new_image
+    else:
+        screen.blit(current_image, (0, 0))
+    
 
 def draw_box():
     pygame.draw.rect(screen, (230, 230, 230), (1700, 1000, 200, 50), 5)  # Draw a black frame around the box (x, y, width, height, border_width)
@@ -211,15 +240,6 @@ class Particle:
         if self.pos.y > screen_size.y:
             self.pos = (random.randint(0, int(screen_size.x)), -10)
         
-        '''
-        self.alpha += self.alpha_dir
-        if self.alpha < ALPHA_MIN:
-            self.alpha = ALPHA_MIN
-            self.alpha_dir = 1
-        if self.alpha > ALPHA_MAX:
-            self.alpha = ALPHA_MAX
-            self.alpha_dir = -1
-        '''
         return 1
         
     def update_image(self):       
@@ -280,6 +300,8 @@ def main():
                 running = False
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 running = False
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_F1:
+                next_image()
             if event.type == MUSIC_END:
                 if image_pomodoro_sync == 0:
                     next_image()
@@ -321,7 +343,7 @@ def main():
         pm.draw(screen)
         
         pygame.display.update()
-        clock.tick(30)  # Set frame rate (adjust as needed)
+        clock.tick(FRAME_RATE)  # Set frame rate (adjust as needed)
     pygame.quit()
     sys.exit()
 
