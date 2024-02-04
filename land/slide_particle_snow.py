@@ -51,7 +51,7 @@ prepare_time = 0.2
 screen_size = Vector2(SCREEN_WIDTH, SCREEN_HEIGHT)
 ALPHA_MIN = 50
 ALPHA_MAX = 255
-dust_image_path = os.path.join(current_dir, 'white_ball.png')
+dust_image_path = os.path.join(current_dir, 'image/white_ball.png')
 
 FRAME_RATE = 30
 TRANSITION_COUNT = int(FRAME_RATE)
@@ -71,6 +71,13 @@ music_folder = config['music_folder']
 music_files = [file for file in os.listdir(music_folder) if file.endswith((".mp3", ".wav"))]
 music_title = ''
 music_artist = ''
+
+start_sound_path = os.path.join(current_dir, 'sound/start.mp3')
+end_sound_path = os.path.join(current_dir, 'sound/end.mp3')
+sound_effects = [pygame.mixer.Sound(start_sound_path), pygame.mixer.Sound(end_sound_path)]
+
+def play_sound(sound_index):
+    sound_effects[sound_index].play()
 
 def play_next_music():
     global music_files, music_title, music_artist, base_name
@@ -116,6 +123,7 @@ def play_next_music():
             file.write(index_text)       
 
         pygame.mixer.music.play()
+        
     else:
         pygame.quit()
         sys.exit()
@@ -291,7 +299,7 @@ def main():
     print(screen_size.x)
     for _ in range(140): # until it slow down under 60Hz    
         pm.add(Particle((random.randint(0, int(screen_size.x)), random.randint(0, int(screen_size.y))), #position
-                            (0, random.uniform(20, 100)), #velocity
+                            (random.uniform(-5, 5), random.uniform(20, 100)), #velocity
                             random.randint(6, 60), #size
                             random.randint(ALPHA_MIN, ALPHA_MAX))) #alpha
     while running:
@@ -330,8 +338,12 @@ def main():
                 if image_pomodoro_sync == 1:
                     next_image()
                 session += 1 
-                if session > 8:
-                    running = False
+                #if session > 8:
+                #    running = False
+            if mode == POMODORO:
+                play_sound(0)
+            elif mode == BREAK:
+                play_sound(1)         
 
         else:                
             timer_text = f"{int(remaining_time // 60):02}:{int(remaining_time % 60):02}"
