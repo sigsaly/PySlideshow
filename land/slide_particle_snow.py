@@ -62,9 +62,11 @@ POMODORO = 1
 BREAK = 2
 
 # Set up the mixer for audio
+volume = 1.0
 pygame.mixer.init()
 MUSIC_END = pygame.USEREVENT+1
 pygame.mixer.music.set_endevent(MUSIC_END)
+pygame.mixer.music.set_volume(volume) 
 
 # Define the path to your music folder
 music_folder = config['music_folder']
@@ -285,7 +287,7 @@ def update_pm(dt):
     pm.update(dt)
 
 def main():
-    global pm
+    global pm, volume
 
     next_image()
     play_next_music()
@@ -308,6 +310,14 @@ def main():
                 running = False
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 running = False
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
+                if volume < 1.0:
+                    volume += 0.05
+                pygame.mixer.music.set_volume(volume) 
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN:
+                if volume > 0.0:
+                    volume -= 0.05
+                pygame.mixer.music.set_volume(volume) 
             if event.type == pygame.KEYDOWN and event.key == pygame.K_F1:
                 next_image()
             if event.type == MUSIC_END:
