@@ -1,10 +1,10 @@
-music_folder = c:\music
-image_folder = c:\image
+music_folder = E:\YoutubeWork\music\lofi
+image_folder = E:\YoutubeWork\Live_winter
 image_display_time = 10000
-image_pomodoro_sync = 0
+image_pomodoro_sync = 1
 image_random = 1
-pomodoro_time = 25
-break_time = 5
+pomodoro_time = 5
+break_time = 1
 timer_x = 1450
 timer_y = 860
 particle_x = 1470

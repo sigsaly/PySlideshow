@@ -5,6 +5,10 @@ import sys
 import random
 import mutagen
 
+#https://www.youtube.com/watch?v=-k3WG5eXSps
+#https://www.youtube.com/watch?v=nQzHd5v9dV4
+
+
 def read_config(filename):
     config = {}
     with open(filename, 'r') as file:
@@ -24,7 +28,7 @@ config = read_config(config_file_path)
 # Set up display
 SCREEN_WIDTH = 1920
 SCREEN_HEIGHT = 1080
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN)
 pygame.display.set_caption("Image Slideshow")
 
 # Load images
@@ -67,6 +71,7 @@ pygame.mixer.init()
 MUSIC_END = pygame.USEREVENT+1
 pygame.mixer.music.set_endevent(MUSIC_END)
 pygame.mixer.music.set_volume(volume) 
+#pygame.mixer.Sound.set_volume(volume) 
 
 # Define the path to your music folder
 music_folder = config['music_folder']
@@ -296,7 +301,7 @@ def main():
     session = 1
 
     running = True
-
+    
     pm = ParticleManager()    
     print(screen_size.x)
     for _ in range(140): # until it slow down under 60Hz    
@@ -314,10 +319,12 @@ def main():
                 if volume < 1.0:
                     volume += 0.05
                 pygame.mixer.music.set_volume(volume) 
+                #pygame.mixer.Sound.set_volume(volume) 
             if event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN:
                 if volume > 0.0:
                     volume -= 0.05
                 pygame.mixer.music.set_volume(volume) 
+                #pygame.mixer.Sound.set_volume(volume) 
             if event.type == pygame.KEYDOWN and event.key == pygame.K_F1:
                 next_image()
             if event.type == MUSIC_END:
